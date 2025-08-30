@@ -1,79 +1,130 @@
-const BookingForm = () => (
-  <div className="bg-white p-6 shadow-md rounded-lg">
-    <h2 className="text-xl font-semibold">Contact Detail</h2>
-    <form>
-      {/* Contact Information */}
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label>First Name</label>
-          <input type="text" className="border p-2 w-full mt-2" />
-        </div>
-        <div>
-          <label>Last Name</label>
-          <input type="text" className="border p-2 w-full mt-2" />
-        </div>
-      </div>
-      <div className="grid grid-cols-2 gap-4 mt-4">
-        <div>
-          <label>Email</label>
-          <input type="email" className="border p-2 w-full mt-2" />
-        </div>
-        <div>
-          <label>Phone Number</label>
-          <input type="text" className="border p-2 w-full mt-2" />
-        </div>
-      </div>
+import axios from "axios";
+import { useState } from "react";
 
-      {/* Payment Information */}
-      <h2 className="text-xl font-semibold mt-6">Pay with</h2>
-      <div className="mt-4">
-        <label>Card Number</label>
-        <input type="text" className="border p-2 w-full mt-2" />
-      </div>
-      <div className="grid grid-cols-2 gap-4 mt-4">
-        <div>
-          <label>Expiration Date</label>
-          <input type="text" className="border p-2 w-full mt-2" />
-        </div>
-        <div>
-          <label>CVV</label>
-          <input type="text" className="border p-2 w-full mt-2" />
-        </div>
-      </div>
+export default function BookingForm() {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    cardNumber: "",
+    expirationDate: "",
+    cvv: "",
+    billingAddress: "",
+  });
 
-      {/* Billing Address */}
-      <h2 className="text-xl font-semibold mt-6">Billing Address</h2>
-      <div className="mt-4">
-        <label>Street Address</label>
-        <input type="text" className="border p-2 w-full mt-2" />
-      </div>
-      <div className="grid grid-cols-2 gap-4 mt-4">
-        <div>
-          <label>City</label>
-          <input type="text" className="border p-2 w-full mt-2" />
-        </div>
-        <div>
-          <label>State</label>
-          <input type="text" className="border p-2 w-full mt-2" />
-        </div>
-      </div>
-      <div className="grid grid-cols-2 gap-4 mt-4">
-        <div>
-          <label>Zip Code</label>
-          <input type="text" className="border p-2 w-full mt-2" />
-        </div>
-        <div>
-          <label>Country</label>
-          <input type="text" className="border p-2 w-full mt-2" />
-        </div>
-      </div>
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
-      {/* Submit Button */}
-      <button className="mt-6 bg-green-500 text-white py-2 px-4 rounded-md w-full">
-        Confirm & Pay
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const validateForm = () => {
+    // Simple validation: all fields required
+    return Object.values(formData).every((val) => val.trim() !== "");
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setSuccess(null);
+
+    if (!validateForm()) {
+      setError("Please fill in all fields.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await axios.post("/api/bookings", formData);
+      setSuccess("Booking confirmed!");
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phoneNumber: "",
+        cardNumber: "",
+        expirationDate: "",
+        cvv: "",
+        billingAddress: "",
+      });
+    } catch (error) {
+      setError("Failed to submit booking.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 bg-white rounded shadow">
+      <input
+        name="firstName"
+        placeholder="First Name"
+        value={formData.firstName}
+        onChange={handleChange}
+        className="block w-full mb-2 p-2 border rounded"
+      />
+      <input
+        name="lastName"
+        placeholder="Last Name"
+        value={formData.lastName}
+        onChange={handleChange}
+        className="block w-full mb-2 p-2 border rounded"
+      />
+      <input
+        name="email"
+        placeholder="Email"
+        type="email"
+        value={formData.email}
+        onChange={handleChange}
+        className="block w-full mb-2 p-2 border rounded"
+      />
+      <input
+        name="phoneNumber"
+        placeholder="Phone Number"
+        value={formData.phoneNumber}
+        onChange={handleChange}
+        className="block w-full mb-2 p-2 border rounded"
+      />
+      <input
+        name="cardNumber"
+        placeholder="Card Number"
+        value={formData.cardNumber}
+        onChange={handleChange}
+        className="block w-full mb-2 p-2 border rounded"
+      />
+      <input
+        name="expirationDate"
+        placeholder="Expiration Date"
+        value={formData.expirationDate}
+        onChange={handleChange}
+        className="block w-full mb-2 p-2 border rounded"
+      />
+      <input
+        name="cvv"
+        placeholder="CVV"
+        value={formData.cvv}
+        onChange={handleChange}
+        className="block w-full mb-2 p-2 border rounded"
+      />
+      <input
+        name="billingAddress"
+        placeholder="Billing Address"
+        value={formData.billingAddress}
+        onChange={handleChange}
+        className="block w-full mb-2 p-2 border rounded"
+      />
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full bg-blue-600 text-white py-2 rounded mt-2"
+      >
+        {loading ? "Processing..." : "Confirm & Pay"}
       </button>
+      {error && <p className="text-red-500 mt-2">{error}</p>}
+      {success && <p className="text-green-600 mt-2">{success}</p>}
     </form>
-  </div>
-);
-
-export default BookingForm;
+  );
+}
