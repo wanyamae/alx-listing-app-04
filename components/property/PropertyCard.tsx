@@ -1,9 +1,17 @@
-import React from 'react';
-import { CardProps } from '../../interfaces';
+import React from "react";
+import { CardProps } from "@/interfaces";
 
-const Card: React.FC<CardProps> = ({ title, description, imageUrl, price, rating, onClick }) => {
+const PropertyCard: React.FC<CardProps> = ({ 
+  id, 
+  title, 
+  description, 
+  imageUrl, 
+  price, 
+  rating, 
+  onClick 
+}) => {
   return (
-    <div
+    <div 
       className="bg-white rounded-lg shadow-md p-6 mb-4 w-full max-w-md cursor-pointer"
       onClick={onClick}
     >
@@ -16,4 +24,4 @@ const Card: React.FC<CardProps> = ({ title, description, imageUrl, price, rating
   );
 };
 
-export default Card;
+export default PropertyCard;

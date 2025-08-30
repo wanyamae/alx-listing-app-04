@@ -1,11 +1,13 @@
 export interface CardProps {
+  id: string;
   title: string;
   description: string;
   imageUrl: string;
   price: number;
   rating: number;
-  onClick?: () => void; // Optional click handler
+  onClick?: () => void;
 }
+
 // Placeholder interface for Card component props
 
 // Placeholder interface for Button component props
