@@ -44,3 +44,12 @@ export interface PillProps {
   onClick: () => void;
   active?: boolean;
 }
+
+export interface Property {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  price: number;
+  rating: number;
+}
