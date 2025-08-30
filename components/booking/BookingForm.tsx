@@ -51,6 +51,7 @@ export default function BookingForm() {
         billingAddress: "",
       });
     } catch (error) {
+      console.error("Booking submission error:", error);
       setError("Failed to submit booking.");
     } finally {
       setLoading(false);
